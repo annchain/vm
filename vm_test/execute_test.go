@@ -2,26 +2,26 @@ package vm_test
 
 import (
 	"fmt"
-	"github.com/annchain/OG/common"
-	"github.com/annchain/OG/common/math"
-	"github.com/annchain/OG/vm/eth/core/vm"
-	"github.com/annchain/OG/vm/ovm"
-	vmtypes "github.com/annchain/OG/vm/types"
+	ogTypes "github.com/annchain/OG/og_interface"
+	"github.com/annchain/commongo/math"
+	"github.com/annchain/vm/eth/core/vm"
+	"github.com/annchain/vm/ovm"
+	vmtypes "github.com/annchain/vm/types"
 )
 
 func ExampleExecute() {
 
 	txContext := &ovm.TxContext{
-		From:       common.HexToAddress("0x01"),
-		To:         common.HexToAddress("0x02"),
+		From:       ogTypes.HexToAddress20("0x01"),
+		To:         ogTypes.HexToAddress20("0x02"),
 		Value:      math.NewBigInt(10),
-		Data:       common.Hex2BytesNoError("6060604052600a8060106000396000f360606040526008565b00"),
+		Data:       ogTypes.Hex2BytesNoError("6060604052600a8060106000396000f360606040526008565b00"),
 		GasPrice:   math.NewBigInt(10000),
 		GasLimit:   DefaultGasLimit,
-		Coinbase:   common.HexToAddress("0x01"),
+		Coinbase:   ogTypes.HexToAddress20("0x01"),
 		SequenceID: 0,
 	}
-	coinBase := common.HexToAddress("0x03")
+	coinBase := ogTypes.HexToAddress20("0x03")
 
 	db := ovm.NewMemoryStateDB()
 	db.CreateAccount(txContext.From)
@@ -36,10 +36,10 @@ func ExampleExecute() {
 	ovm := ovm.NewOVM(context, []ovm.Interpreter{evmInterpreter}, &ovm.OVMConfig{NoRecursion: false})
 
 	ret, contractAddr, leftOverGas, err := ovm.Create(vmtypes.AccountRef(txContext.From), txContext.Data, txContext.GasLimit, txContext.Value.Value)
-	fmt.Println(common.Bytes2Hex(ret), contractAddr.String(), leftOverGas, err)
+	fmt.Println(ogTypes.Bytes2Hex(ret), contractAddr.String(), leftOverGas, err)
 
 	ret, leftOverGas, err = ovm.Call(vmtypes.AccountRef(txContext.From), contractAddr, txContext.Data, txContext.GasLimit, txContext.Value.Value)
-	fmt.Println(common.Bytes2Hex(ret), contractAddr.String(), leftOverGas, err)
+	fmt.Println(ogTypes.Bytes2Hex(ret), contractAddr.String(), leftOverGas, err)
 
 	fmt.Println(db.String())
 }

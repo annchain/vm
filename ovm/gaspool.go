@@ -18,7 +18,7 @@ package ovm
 
 import (
 	"fmt"
-	"github.com/annchain/OG/vm/types"
+	"github.com/annchain/vm/types"
 	"math"
 )
 

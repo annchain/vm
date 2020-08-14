@@ -17,10 +17,10 @@
 package code
 
 import (
-	ogcrypto2 "github.com/annchain/OG/deprecated/ogcrypto"
+	ogcrypto2 "github.com/annchain/OG/ogcrypto"
 	"testing"
 
-	"github.com/annchain/OG/vm/instruction"
+	"github.com/annchain/vm/instruction"
 )
 
 func TestJumpDestAnalysis(t *testing.T) {

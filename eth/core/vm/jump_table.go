@@ -20,9 +20,9 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/annchain/OG/vm/eth/params"
-	"github.com/annchain/OG/vm/instruction"
-	vmtypes "github.com/annchain/OG/vm/types"
+	"github.com/annchain/vm/eth/params"
+	"github.com/annchain/vm/instruction"
+	vmtypes "github.com/annchain/vm/types"
 )
 
 type (

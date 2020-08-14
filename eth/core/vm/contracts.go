@@ -19,16 +19,16 @@ package vm
 import (
 	"crypto/sha256"
 	"errors"
-	math2 "github.com/annchain/OG/arefactor/common/math"
-	common2 "github.com/annchain/OG/common"
-	"github.com/annchain/OG/deprecated/ogcrypto"
 	"math/big"
 
-	"github.com/annchain/OG/arefactor/ogcrypto/bn256"
-	vmcommon "github.com/annchain/OG/vm/common"
-	"github.com/annchain/OG/vm/eth/common"
-	"github.com/annchain/OG/vm/eth/params"
-	vmtypes "github.com/annchain/OG/vm/types"
+	ogTypes "github.com/annchain/OG/og_interface"
+	"github.com/annchain/OG/ogcrypto"
+	"github.com/annchain/OG/ogcrypto/bn256"
+	math2 "github.com/annchain/commongo/math"
+	vmcommon "github.com/annchain/vm/common"
+	"github.com/annchain/vm/eth/common"
+	"github.com/annchain/vm/eth/params"
+	vmtypes "github.com/annchain/vm/types"
 	"golang.org/x/crypto/ripemd160"
 )
 
@@ -61,15 +61,15 @@ type PrecompiledContract interface {
 
 // PrecompiledContractsByzantium contains the default set of pre-compiled Ethereum
 // contracts used in the Byzantium release.
-var PrecompiledContractsByzantium = map[common2.Address]PrecompiledContract{
-	common2.BytesToAddress([]byte{1}): &ecrecover{},
-	common2.BytesToAddress([]byte{2}): &sha256hash{},
-	common2.BytesToAddress([]byte{3}): &ripemd160hash{},
-	common2.BytesToAddress([]byte{4}): &dataCopy{},
-	common2.BytesToAddress([]byte{5}): &bigModExp{},
-	common2.BytesToAddress([]byte{6}): &bn256Add{},
-	common2.BytesToAddress([]byte{7}): &bn256ScalarMul{},
-	common2.BytesToAddress([]byte{8}): &bn256Pairing{},
+var PrecompiledContractsByzantium = map[ogTypes.AddressKey]PrecompiledContract{
+	ogTypes.BytesToAddress32([]byte{1}): &ecrecover{},
+	ogTypes.BytesToAddress32([]byte{2}): &sha256hash{},
+	ogTypes.BytesToAddress32([]byte{3}): &ripemd160hash{},
+	ogTypes.BytesToAddress32([]byte{4}): &dataCopy{},
+	ogTypes.BytesToAddress32([]byte{5}): &bigModExp{},
+	ogTypes.BytesToAddress32([]byte{6}): &bn256Add{},
+	ogTypes.BytesToAddress32([]byte{7}): &bn256ScalarMul{},
+	ogTypes.BytesToAddress32([]byte{8}): &bn256Pairing{},
 }
 
 // RunPrecompiledContract runs and evaluates the output of a precompiled contract.

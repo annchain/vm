@@ -17,7 +17,7 @@
 package types
 
 import (
-	ogTypes "github.com/annchain/OG/arefactor/og_interface"
+	ogTypes "github.com/annchain/OG/og_interface"
 	"github.com/annchain/vm/eth/common/hexutil"
 	"github.com/annchain/vm/eth/rlp"
 	"io"

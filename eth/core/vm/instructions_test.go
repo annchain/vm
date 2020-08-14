@@ -18,17 +18,15 @@ package vm
 
 import (
 	"bytes"
-	"github.com/annchain/OG/arefactor/og/types"
-	common2 "github.com/annchain/OG/common"
-	ogcrypto2 "github.com/annchain/OG/deprecated/ogcrypto"
+	ogTypes "github.com/annchain/OG/og_interface"
+	"github.com/annchain/OG/ogcrypto"
 	"math/big"
 	"testing"
 
-	"github.com/annchain/OG/common/crypto"
-	"github.com/annchain/OG/vm/eth/common"
+	"github.com/annchain/vm/eth/common"
 
-	"github.com/annchain/OG/vm/ovm"
-	vmtypes "github.com/annchain/OG/vm/types"
+	"github.com/annchain/vm/ovm"
+	vmtypes "github.com/annchain/vm/types"
 )
 
 type twoOperandTest struct {
@@ -569,10 +567,10 @@ func TestCreate2Addreses(t *testing.T) {
 		},
 	} {
 
-		origin := common2.BytesToAddress(common.FromHex(tt.origin))
-		salt := types.BytesToHash(common.FromHex(tt.salt))
+		origin := ogTypes.BytesToAddress20(common.FromHex(tt.origin))
+		salt := ogTypes.BytesToHash32(common.FromHex(tt.salt))
 		code := common.FromHex(tt.code)
-		codeHash := ogcrypto2.Keccak256(code)
+		codeHash := ogcrypto.Keccak256(code)
 		address := crypto.CreateAddress2(origin, salt.Bytes, codeHash)
 		/*
 			stack          := newstack()
@@ -583,7 +581,7 @@ func TestCreate2Addreses(t *testing.T) {
 			gas, _ := gasCreate2(params.GasTable{}, nil, nil, stack, nil, 0)
 			fmt.Printf("Example %d\n* address `0x%x`\n* salt `0x%x`\n* init_code `0x%x`\n* gas (assuming no mem expansion): `%v`\n* result: `%s`\n\n", i,origin, salt, code, gas, address.String())
 		*/
-		expected := common2.BytesToAddress(common.FromHex(tt.expected))
+		expected := ogTypes.BytesToAddress20(common.FromHex(tt.expected))
 		if !bytes.Equal(expected.ToBytes(), address.ToBytes()) {
 			t.Errorf("test %d: expected %s, got %s", i, expected.String(), address.String())
 		}

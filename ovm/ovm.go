@@ -17,14 +17,15 @@
 package ovm
 
 import (
-	ogTypes "github.com/annchain/OG/arefactor/og_interface"
-	ogcrypto2 "github.com/annchain/OG/deprecated/ogcrypto"
+	"fmt"
+	ogTypes "github.com/annchain/OG/og_interface"
+	ogcrypto2 "github.com/annchain/OG/ogcrypto"
 	"math/big"
 	"sync/atomic"
 
-	"github.com/annchain/OG/common/hexutil"
-	"github.com/annchain/OG/vm/eth/params"
-	vmtypes "github.com/annchain/OG/vm/types"
+	"github.com/annchain/commongo/hexutil"
+	"github.com/annchain/vm/eth/params"
+	vmtypes "github.com/annchain/vm/types"
 	"github.com/sirupsen/logrus"
 )
 
@@ -352,7 +353,7 @@ func (ovm *OVM) create(caller vmtypes.ContractRef, codeAndHash *vmtypes.CodeAndH
 
 	// Ensure there's no existing contract already at the designated address
 	contractHash := ctx.StateDB.GetCodeHash(&address).(*ogTypes.Hash32)
-	if ctx.StateDB.GetNonce(&address) != 0 || (*contractHash != (ogTypes.Hash32{}) && contractHash != emptyCodeHash) {
+	if ctx.StateDB.GetNonce(&address) != 0 || (*contractHash != (ogTypes.Hash32{}) && contractHash.Hex() != fmt.Sprintf("%x", emptyCodeHash)) {
 		return nil, ogTypes.Address20{}, 0, vmtypes.ErrContractAddressCollision
 	}
 	// Create a new account on the state

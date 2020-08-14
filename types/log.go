@@ -17,12 +17,11 @@
 package types
 
 import (
-	"github.com/annchain/OG/arefactor/og/types"
-	"github.com/annchain/OG/common"
+	ogTypes "github.com/annchain/OG/og_interface"
 	"io"
 
-	"github.com/annchain/OG/common/hexutil"
-	"github.com/annchain/OG/vm/eth/rlp"
+	"github.com/annchain/commongo/hexutil"
+	"github.com/annchain/vm/eth/rlp"
 )
 
 //go:generate gencodec -type Log -field-override logMarshaling -out gen_log_json.go
@@ -32,9 +31,9 @@ import (
 type Log struct {
 	// Consensus fields:
 	// address of the contract that generated the event
-	Address common.Address `json:"address" gencodec:"required"`
+	Address ogTypes.Address `json:"address" gencodec:"required"`
 	// list of topics provided by the contract.
-	Topics types.Hashes `json:"topics" gencodec:"required"`
+	Topics []ogTypes.Hash `json:"topics" gencodec:"required"`
 	// supplied by the contract, usually ABI-encoded
 	Data []byte `json:"data" gencodec:"required"`
 
@@ -43,11 +42,11 @@ type Log struct {
 	// block in which the transaction was included
 	SequenceID uint64 `json:"blockNumber"`
 	// hash of the transaction
-	TxHash types.Hash `json:"transactionHash" gencodec:"required"`
+	TxHash ogTypes.Hash `json:"transactionHash" gencodec:"required"`
 	// index of the transaction in the block
 	TxIndex uint `json:"transactionIndex" gencodec:"required"`
 	// hash of the block in which the transaction was included
-	BlockHash types.Hash `json:"blockHash"`
+	BlockHash ogTypes.Hash `json:"blockHash"`
 	// index of the log in the block
 	Index uint `json:"logIndex" gencodec:"required"`
 
@@ -64,19 +63,19 @@ type logMarshaling struct {
 }
 
 type rlpLog struct {
-	Address common.Address
-	Topics  types.Hashes
+	Address ogTypes.Address
+	Topics  []ogTypes.Hash
 	Data    []byte
 }
 
 type rlpStorageLog struct {
-	Address     common.Address
-	Topics      types.Hashes
+	Address     ogTypes.Address
+	Topics      []ogTypes.Hash
 	Data        []byte
 	BlockNumber uint64
-	TxHash      types.Hash
+	TxHash      ogTypes.Hash
 	TxIndex     uint
-	BlockHash   types.Hash
+	BlockHash   ogTypes.Hash
 	Index       uint
 }
 

@@ -18,7 +18,7 @@ package vm
 
 import (
 	"fmt"
-	math2 "github.com/annchain/OG/arefactor/common/math"
+	math2 "github.com/annchain/commongo/math"
 	"math/big"
 )
 

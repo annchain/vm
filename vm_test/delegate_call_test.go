@@ -2,10 +2,10 @@ package vm_test
 
 import (
 	"fmt"
-	"github.com/annchain/OG/common"
-	"github.com/annchain/OG/common/math"
-	"github.com/annchain/OG/vm/eth/core/vm"
-	"github.com/annchain/OG/vm/ovm"
+	ogTypes "github.com/annchain/OG/og_interface"
+	"github.com/annchain/commongo/math"
+	"github.com/annchain/vm/eth/core/vm"
+	"github.com/annchain/vm/ovm"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -13,9 +13,9 @@ import (
 )
 
 func TestCall(t *testing.T) {
-	from := common.HexToAddress("0xABCDEF88")
-	from2 := common.HexToAddress("0xABCDEF87")
-	coinBase := common.HexToAddress("0x1234567812345678AABBCCDDEEFF998877665544")
+	from := ogTypes.HexToAddress20("0xABCDEF88")
+	from2 := ogTypes.HexToAddress20("0xABCDEF87")
+	coinBase := ogTypes.HexToAddress20("0x1234567812345678AABBCCDDEEFF998877665544")
 
 	tracer := vm.NewStructLogger(&vm.LogConfig{
 		Debug: true,
@@ -28,7 +28,7 @@ func TestCall(t *testing.T) {
 		Tracer:    tracer,
 		VmContext: ovm.NewOVMContext(&ovm.DefaultChainContext{}, &coinBase, ldb),
 		TxContext: &ovm.TxContext{
-			From:       common.HexToAddress("0xABCDEF88"),
+			From:       ogTypes.HexToAddress20("0xABCDEF88"),
 			Value:      math.NewBigInt(0),
 			GasPrice:   math.NewBigInt(1),
 			GasLimit:   DefaultGasLimit,
@@ -37,7 +37,7 @@ func TestCall(t *testing.T) {
 		},
 	}
 
-	addrs := make(map[string]common.Address)
+	addrs := make(map[string]ogTypes.Address)
 
 	for _, filename := range []string{"Callee.bin", "Caller.bin"} {
 		_, contractAddr, leftGas, err := DeployContract(filename, from, coinBase, rt, nil)

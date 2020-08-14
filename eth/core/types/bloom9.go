@@ -18,10 +18,10 @@ package types
 
 //import (
 //	"fmt"
-//	ogcrypto2 "github.com/annchain/OG/arefactor/ogcrypto"
+//	ogcrypto2 "github.com/annchain/OG/ogcrypto"
 //	"math/big"
 //
-//	"github.com/annchain/OG/vm/eth/common/hexutil"
+//	"github.com/annchain/vm/eth/common/hexutil"
 //)
 //
 //type bytesBacked interface {

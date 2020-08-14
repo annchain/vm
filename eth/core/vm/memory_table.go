@@ -17,10 +17,10 @@
 package vm
 
 import (
-	math2 "github.com/annchain/OG/arefactor/common/math"
+	math2 "github.com/annchain/commongo/math"
 	"math/big"
 
-	"github.com/annchain/OG/vm/eth/common"
+	"github.com/annchain/vm/eth/common"
 )
 
 func memorySha3(stack *Stack) *big.Int {

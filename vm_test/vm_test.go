@@ -2,12 +2,12 @@ package vm_test
 
 import (
 	"fmt"
-	"github.com/annchain/OG/common"
-	"github.com/annchain/OG/common/math"
-	"github.com/annchain/OG/vm/eth/common/hexutil"
-	"github.com/annchain/OG/vm/eth/core/vm"
-	"github.com/annchain/OG/vm/ovm"
-	vmtypes "github.com/annchain/OG/vm/types"
+	ogTypes "github.com/annchain/OG/og_interface"
+	"github.com/annchain/commongo/math"
+	"github.com/annchain/vm/eth/common/hexutil"
+	"github.com/annchain/vm/eth/core/vm"
+	"github.com/annchain/vm/ovm"
+	vmtypes "github.com/annchain/vm/types"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"os"
@@ -15,19 +15,19 @@ import (
 )
 
 func TestContractSmallStorage(t *testing.T) {
-	from := common.HexToAddress("0x01")
+	from := ogTypes.HexToAddress20("0x01")
 
 	txContext := &ovm.TxContext{
-		From: common.HexToAddress("0x01"),
-		//To:       common.HexToAddress("0x02"),
+		From: ogTypes.HexToAddress20("0x01"),
+		//To:       ogTypes.HexToAddress20("0x02"),
 		Value:      math.NewBigInt(0),
 		Data:       readFile("OwnedToken.bin"),
 		GasPrice:   math.NewBigInt(1),
 		GasLimit:   DefaultGasLimit,
-		Coinbase:   common.HexToAddress("0x01"),
+		Coinbase:   ogTypes.HexToAddress20("0x01"),
 		SequenceID: 0,
 	}
-	coinBase := common.HexToAddress("0x1234567812345678AABBCCDDEEFF998877665544")
+	coinBase := ogTypes.HexToAddress20("0x1234567812345678AABBCCDDEEFF998877665544")
 
 	ldb := DefaultLDB(from, coinBase)
 
@@ -52,7 +52,7 @@ func TestContractSmallStorage(t *testing.T) {
 	//ovm.StateDB.SetNonce(coinBase, 0)
 	//ret, contractAddr, leftOverGas, err = ovm.Create(&context, vmtypes.AccountRef(coinBase), txContext.Data, txContext.GasLimit, txContext.Value.Value)
 	logrus.Info("Deployed contract")
-	fmt.Println("CP1", common.Bytes2Hex(ret), contractAddr.String(), leftOverGas, err)
+	fmt.Println("CP1", ogTypes.Bytes2Hex(ret), contractAddr.String(), leftOverGas, err)
 	fmt.Println(ldb.String())
 	vm.WriteTrace(os.Stdout, tracer.Logs)
 	assert.NoError(t, err)
@@ -72,15 +72,15 @@ func TestContractSmallStorage(t *testing.T) {
 
 	ret, leftOverGas, err = ovm.Call(vmtypes.AccountRef(txContext.From), contractAddr, input, txContext.GasLimit, txContext.Value.Value)
 	logrus.Info("Called contract")
-	fmt.Println("CP2", common.Bytes2Hex(ret), contractAddr.String(), leftOverGas, err)
+	fmt.Println("CP2", ogTypes.Bytes2Hex(ret), contractAddr.String(), leftOverGas, err)
 	fmt.Println(ldb.String())
 	vm.WriteTrace(os.Stdout, tracer.Logs)
 	assert.NoError(t, err)
 }
 
 func TestContractHelloWorld(t *testing.T) {
-	from := common.HexToAddress("0x01")
-	coinBase := common.HexToAddress("0x1234567812345678AABBCCDDEEFF998877665544")
+	from := ogTypes.HexToAddress20("0x01")
+	coinBase := ogTypes.HexToAddress20("0x1234567812345678AABBCCDDEEFF998877665544")
 
 	tracer := vm.NewStructLogger(&vm.LogConfig{
 		Debug: true,
@@ -92,8 +92,8 @@ func TestContractHelloWorld(t *testing.T) {
 		Tracer:    tracer,
 		VmContext: ovm.NewOVMContext(&ovm.DefaultChainContext{}, &coinBase, ldb),
 		TxContext: &ovm.TxContext{
-			From: common.HexToAddress("0x01"),
-			//To:       common.HexToAddress("0x02"),
+			From: ogTypes.HexToAddress20("0x01"),
+			//To:       ogTypes.HexToAddress20("0x02"),
 			Value:      math.NewBigInt(0),
 			Data:       readFile("hello.bin"),
 			GasPrice:   math.NewBigInt(1),

@@ -54,7 +54,7 @@ func TestBloom(t *testing.T) {
 import (
 	"testing"
 
-	"github.com/annchain/OG/vm/eth/core/state"
+	"github.com/annchain/vm/eth/core/state"
 )
 
 func TestBloom9(t *testing.T) {

@@ -1,7 +1,7 @@
 package types
 
 import (
-	ogTypes "github.com/annchain/OG/arefactor/og_interface"
+	ogTypes "github.com/annchain/OG/og_interface"
 	"math/big"
 )
 

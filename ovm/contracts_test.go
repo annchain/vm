@@ -18,8 +18,8 @@ package ovm
 
 import (
 	"fmt"
-	"github.com/annchain/OG/common"
-	vmtypes "github.com/annchain/OG/vm/types"
+	ogTypes "github.com/annchain/OG/og_interface"
+	vmtypes "github.com/annchain/vm/types"
 	"math/big"
 	"testing"
 )
@@ -337,15 +337,15 @@ var bn256PairingTests = []precompiledTest{
 }
 
 func testPrecompiled(addr string, test precompiledTest, t *testing.T) {
-	p := PrecompiledContractsByzantium[common.HexToAddress(addr)]
-	in := common.Hex2BytesNoError(test.input)
-	contract := vmtypes.NewContract(vmtypes.AccountRef(common.HexToAddress("1337")),
+	p := PrecompiledContractsByzantium[ogTypes.HexToAddress20(addr)]
+	in := ogTypes.Hex2BytesNoError(test.input)
+	contract := vmtypes.NewContract(vmtypes.AccountRef(ogTypes.HexToAddress20("1337")),
 		nil, new(big.Int), p.RequiredGas(in))
 	t.Run(fmt.Sprintf("%s-Gas=%d", test.name, contract.Gas), func(t *testing.T) {
 		if res, err := RunPrecompiledContract(p, in, contract); err != nil {
 			t.Error(err)
-		} else if common.Bytes2Hex(res) != test.expected {
-			t.Errorf("Expected %v, got %v", test.expected, common.Bytes2Hex(res))
+		} else if ogTypes.Bytes2Hex(res) != test.expected {
+			t.Errorf("Expected %v, got %v", test.expected, ogTypes.Bytes2Hex(res))
 		}
 	})
 }
@@ -354,10 +354,10 @@ func benchmarkPrecompiled(addr string, test precompiledTest, bench *testing.B) {
 	if test.noBenchmark {
 		return
 	}
-	p := PrecompiledContractsByzantium[common.HexToAddress(addr)]
-	in := common.Hex2BytesNoError(test.input)
+	p := PrecompiledContractsByzantium[ogTypes.HexToAddress20(addr)]
+	in := ogTypes.Hex2BytesNoError(test.input)
 	reqGas := p.RequiredGas(in)
-	contract := vmtypes.NewContract(vmtypes.AccountRef(common.HexToAddress("1337")),
+	contract := vmtypes.NewContract(vmtypes.AccountRef(ogTypes.HexToAddress("1337")),
 		nil, new(big.Int), reqGas)
 
 	var (
@@ -379,8 +379,8 @@ func benchmarkPrecompiled(addr string, test precompiledTest, bench *testing.B) {
 			bench.Error(err)
 			return
 		}
-		if common.Bytes2Hex(res) != test.expected {
-			bench.Error(fmt.Sprintf("Expected %v, got %v", test.expected, common.Bytes2Hex(res)))
+		if ogTypes.Bytes2Hex(res) != test.expected {
+			bench.Error(fmt.Sprintf("Expected %v, got %v", test.expected, ogTypes.Bytes2Hex(res)))
 			return
 		}
 	})

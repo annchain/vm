@@ -19,16 +19,16 @@ package ovm
 import (
 	"crypto/sha256"
 	"errors"
-	math2 "github.com/annchain/OG/arefactor/common/math"
-	ogTypes "github.com/annchain/OG/arefactor/og_interface"
-	"github.com/annchain/OG/deprecated/ogcrypto"
+	ogTypes "github.com/annchain/OG/og_interface"
+	"github.com/annchain/OG/ogcrypto"
+	math2 "github.com/annchain/commongo/math"
 	"math"
 	"math/big"
 
-	"github.com/annchain/OG/arefactor/ogcrypto/bn256"
-	"github.com/annchain/OG/vm/eth/common"
-	"github.com/annchain/OG/vm/eth/params"
-	vmtypes "github.com/annchain/OG/vm/types"
+	"github.com/annchain/OG/ogcrypto/bn256"
+	"github.com/annchain/vm/eth/common"
+	"github.com/annchain/vm/eth/params"
+	vmtypes "github.com/annchain/vm/types"
 	"golang.org/x/crypto/ripemd160"
 )
 

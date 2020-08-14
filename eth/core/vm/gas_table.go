@@ -17,12 +17,11 @@
 package vm
 
 import (
-	math2 "github.com/annchain/OG/arefactor/common/math"
-	"github.com/annchain/OG/arefactor/og/types"
-	common2 "github.com/annchain/OG/common"
-	"github.com/annchain/OG/vm/eth/common"
-	"github.com/annchain/OG/vm/eth/params"
-	vmtypes "github.com/annchain/OG/vm/types"
+	ogTypes "github.com/annchain/OG/og_interface"
+	math2 "github.com/annchain/commongo/math"
+	"github.com/annchain/vm/eth/common"
+	"github.com/annchain/vm/eth/params"
+	vmtypes "github.com/annchain/vm/types"
 )
 
 // memoryGasCosts calculates the quadratic gas for memory expansion. It does so
@@ -121,7 +120,7 @@ func gasReturnDataCopy(gt params.GasTable, ctx *vmtypes.Context, contract *vmtyp
 func gasSStore(gt params.GasTable, ctx *vmtypes.Context, contract *vmtypes.Contract, stack *Stack, mem *Memory, memorySize uint64) (uint64, error) {
 	var (
 		y, x    = stack.Back(1), stack.Back(0)
-		current = ctx.StateDB.GetState(contract.Address(), types.BigToHash(x))
+		current = ctx.StateDB.GetState(contract.Address(), ogTypes.BigToHash32(x))
 	)
 	// This checks for 3 scenario's and calculates gas accordingly:
 	//
@@ -129,9 +128,9 @@ func gasSStore(gt params.GasTable, ctx *vmtypes.Context, contract *vmtypes.Contr
 	// 2. From a non-zero value address to a zero-value address (DELETE)
 	// 3. From a non-zero to a non-zero                         (CHANGE)
 	switch {
-	case current == (types.Hash{}) && y.Sign() != 0: // 0 => non 0
+	case current == (ogTypes.Hash32{}) && y.Sign() != 0: // 0 => non 0
 		return params.SstoreSetGas, nil
-	case current != (types.Hash{}) && y.Sign() == 0: // non 0 => 0
+	case current != (ogTypes.Hash32{}) && y.Sign() == 0: // non 0 => 0
 		ctx.StateDB.AddRefund(params.SstoreRefundGas)
 		return params.SstoreClearGas, nil
 	default: // non 0 => non 0 (or 0 => 0)
@@ -151,29 +150,29 @@ func gasSStore(gt params.GasTable, ctx *vmtypes.Context, contract *vmtypes.Contr
 	// 	  2.2.2. If original value equals new value (this storage slot is reset)
 	//       2.2.2.1. If original value is 0, add 19800 gas to refund counter.
 	// 	     2.2.2.2. Otherwise, add 4800 gas to refund counter.
-	value := types.BigToHash(y)
+	value := ogTypes.BigToHash32(y)
 	if current == value { // noop (1)
 		return params.NetSstoreNoopGas, nil
 	}
-	original := ctx.StateDB.GetCommittedState(contract.Address(), types.BigToHash(x))
+	original := ctx.StateDB.GetCommittedState(contract.Address(), ogTypes.BigToHash32(x))
 	if original == current {
-		if original == (types.Hash{}) { // create slot (2.1.1)
+		if original == (ogTypes.Hash32{}) { // create slot (2.1.1)
 			return params.NetSstoreInitGas, nil
 		}
-		if value == (types.Hash{}) { // delete slot (2.1.2b)
+		if value == (ogTypes.Hash32{}) { // delete slot (2.1.2b)
 			ctx.StateDB.AddRefund(params.NetSstoreClearRefund)
 		}
 		return params.NetSstoreCleanGas, nil // write existing slot (2.1.2)
 	}
-	if original != (types.Hash{}) {
-		if current == (types.Hash{}) { // recreate slot (2.2.1.1)
+	if original != (ogTypes.Hash32{}) {
+		if current == (ogTypes.Hash32{}) { // recreate slot (2.2.1.1)
 			ctx.StateDB.SubRefund(params.NetSstoreClearRefund)
-		} else if value == (types.Hash{}) { // delete slot (2.2.1.2)
+		} else if value == (ogTypes.Hash32{}) { // delete slot (2.2.1.2)
 			ctx.StateDB.AddRefund(params.NetSstoreClearRefund)
 		}
 	}
 	if original == value {
-		if original == (types.Hash{}) { // reset to original inexistent slot (2.2.2.1)
+		if original == (ogTypes.Hash32{}) { // reset to original inexistent slot (2.2.2.1)
 			ctx.StateDB.AddRefund(params.NetSstoreResetClearRefund)
 		} else { // reset to original existing slot (2.2.2.2)
 			ctx.StateDB.AddRefund(params.NetSstoreResetRefund)
@@ -390,7 +389,7 @@ func gasCall(gt params.GasTable, ctx *vmtypes.Context, contract *vmtypes.Contrac
 	var (
 		gas            = gt.Calls
 		transfersValue = stack.Back(2).Sign() != 0
-		address        = common2.BigToAddress(stack.Back(1))
+		address        = ogTypes.BigToAddress20(stack.Back(1))
 	)
 	if transfersValue && ctx.StateDB.Empty(address) {
 		gas += params.CallNewAccountGas
@@ -453,7 +452,7 @@ func gasSuicide(gt params.GasTable, ctx *vmtypes.Context, contract *vmtypes.Cont
 	var gas uint64
 	gas = gt.Suicide
 	var (
-		address = common2.BigToAddress(stack.Back(0))
+		address = ogTypes.BigToAddress20(stack.Back(0))
 	)
 	// if empty and transfers value
 	if ctx.StateDB.Empty(address) && ctx.StateDB.GetBalance(contract.Address()).Value.Sign() != 0 {

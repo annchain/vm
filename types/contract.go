@@ -17,13 +17,13 @@
 package types
 
 import (
-	ogTypes "github.com/annchain/OG/arefactor/og_interface"
-	"github.com/annchain/OG/arefactor/ogcrypto"
-	"github.com/annchain/OG/common/hexutil"
-	"github.com/annchain/OG/common/math"
-	"github.com/annchain/OG/vm/code"
-	"github.com/annchain/OG/vm/common"
-	"github.com/annchain/OG/vm/instruction"
+	ogTypes "github.com/annchain/OG/og_interface"
+	"github.com/annchain/OG/ogcrypto"
+	"github.com/annchain/commongo/hexutil"
+	"github.com/annchain/commongo/math"
+	"github.com/annchain/vm/code"
+	"github.com/annchain/vm/common"
+	"github.com/annchain/vm/instruction"
 
 	"github.com/sirupsen/logrus"
 	"math/big"
@@ -36,7 +36,7 @@ type CodeAndHash struct {
 
 func (c *CodeAndHash) Hash() ogTypes.Hash32 {
 	if c.hash == (ogTypes.Hash32{}) {
-		c.hash = *ogTypes.BytesToHash32(crypto.Keccak256Hash(c.Code))
+		c.hash = *ogTypes.BytesToHash32(ogcrypto.Keccak256Hash(c.Code))
 	}
 	return c.hash
 }
@@ -195,7 +195,7 @@ func (c *Contract) SetCallCode(addr ogTypes.Address20, hash ogTypes.Hash32, code
 	logrus.WithFields(logrus.Fields{
 		"addr":  addr.Hex(),
 		"hash":  hash.Hex(),
-		"bytes": hexutil.Encode(code[0:math.MinInt(20, len(code))]) + "...",
+		"bytes": hexutil.Encode(code[0:math.SmallerInt(20, len(code))]) + "...",
 	}).Info("SetCallCode")
 	c.Code = code
 	c.CodeHash = hash

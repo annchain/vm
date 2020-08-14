@@ -17,9 +17,9 @@
 package ovm
 
 import (
-	ogTypes "github.com/annchain/OG/arefactor/og_interface"
-	"github.com/annchain/OG/common/math"
-	vmtypes "github.com/annchain/OG/vm/types"
+	ogTypes "github.com/annchain/OG/og_interface"
+	"github.com/annchain/commongo/math"
+	vmtypes "github.com/annchain/vm/types"
 	"math/big"
 )
 
@@ -58,13 +58,13 @@ func NewOVMContext(chainContext ChainContext, coinBase ogTypes.Address, stateDB 
 
 // CanTransfer checks whether there are enough funds in the address' account to make a transfer.
 // This does not take the necessary gas in to account to make the transfer valid.
-func CanTransfer(db vmtypes.StateDB, addr ogTypes.Address, amount *big.Int) bool {
-	return db.GetBalance(addr).Value.Cmp(amount) >= 0
+func CanTransfer(db vmtypes.StateDB, addr ogTypes.Address20, amount *big.Int) bool {
+	return db.GetBalance(&addr).Value.Cmp(amount) >= 0
 }
 
 // Transfer subtracts amount from sender and adds amount to recipient using the given Db
-func Transfer(db vmtypes.StateDB, sender, recipient ogTypes.Address, amount *big.Int) {
+func Transfer(db vmtypes.StateDB, sender, recipient ogTypes.Address20, amount *big.Int) {
 	a := math.NewBigIntFromBigInt(amount)
-	db.SubBalance(sender, a)
-	db.AddBalance(recipient, a)
+	db.SubBalance(&sender, a)
+	db.AddBalance(&recipient, a)
 }

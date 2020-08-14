@@ -18,18 +18,16 @@ package vm
 
 import (
 	"fmt"
-	math2 "github.com/annchain/OG/arefactor/common/math"
-	"github.com/annchain/OG/arefactor/og/types"
+	ogTypes "github.com/annchain/OG/og_interface"
+	math2 "github.com/annchain/commongo/math"
 	"hash"
 	"sync/atomic"
 
-	"github.com/annchain/OG/vm/eth/common"
-	"github.com/annchain/OG/vm/eth/params"
-	"github.com/annchain/OG/vm/instruction"
-
-	"github.com/annchain/OG/vm/ovm"
-
-	vmtypes "github.com/annchain/OG/vm/types"
+	"github.com/annchain/vm/eth/common"
+	"github.com/annchain/vm/eth/params"
+	"github.com/annchain/vm/instruction"
+	"github.com/annchain/vm/ovm"
+	vmtypes "github.com/annchain/vm/types"
 )
 
 // keccakState wraps sha3.state. In addition to the usual hash methods, it also supports
@@ -50,7 +48,7 @@ type EVMInterpreter struct {
 	gasTable   params.GasTable
 	intPool    *intPool
 	hasher     keccakState    // Keccak256 hasher instance shared across opcodes
-	hasherBuf  types.Hash     // Keccak256 hasher result array shared aross opcodes
+	hasherBuf  ogTypes.Hash   // Keccak256 hasher result array shared aross opcodes
 	jumpTable  [256]operation // JumpTable contains the OVM instruction table.
 	readOnly   bool           // Whether to throw on stateful modifications
 	returnData []byte         // Last CALL's return data for subsequent reuse

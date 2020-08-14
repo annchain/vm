@@ -5,12 +5,11 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
-	"github.com/annchain/OG/arefactor/og/types"
-	"github.com/annchain/OG/common"
-	"github.com/annchain/OG/common/math"
-	"github.com/annchain/OG/vm/eth/core/vm"
-	"github.com/annchain/OG/vm/ovm"
-	vmtypes "github.com/annchain/OG/vm/types"
+	ogTypes "github.com/annchain/OG/og_interface"
+	"github.com/annchain/commongo/math"
+	"github.com/annchain/vm/eth/core/vm"
+	"github.com/annchain/vm/ovm"
+	vmtypes "github.com/annchain/vm/types"
 	"github.com/sirupsen/logrus"
 
 	"github.com/stretchr/testify/assert"
@@ -36,7 +35,7 @@ type Runtime struct {
 	Tracer    vm.Tracer
 }
 
-func DefaultLDB(from common.Address, coinBase common.Address) *ovm.LayerStateDB {
+func DefaultLDB(from ogTypes.Address, coinBase ogTypes.Address) *ovm.LayerStateDB {
 	mmdb := ovm.NewMemoryStateDB()
 	ldb := ovm.NewLayerDB(mmdb)
 	ldb.NewLayer()
@@ -58,7 +57,7 @@ func DefaultOVM(runtime *Runtime) *ovm.OVM {
 	return oovm
 }
 
-func DeployContract(filename string, from common.Address, coinBase common.Address, rt *Runtime, params []byte) (ret []byte, contractAddr common.Address, leftOverGas uint64, err error) {
+func DeployContract(filename string, from ogTypes.Address, coinBase ogTypes.Address, rt *Runtime, params []byte) (ret []byte, contractAddr ogTypes.Address, leftOverGas uint64, err error) {
 	txContext := &ovm.TxContext{
 		From:       from,
 		Value:      math.NewBigInt(0),
@@ -83,14 +82,14 @@ func DeployContract(filename string, from common.Address, coinBase common.Addres
 		"filename":     filename,
 		"contractAddr": contractAddr.Hex(),
 		"err":          err,
-		"ret":          common.Bytes2Hex(ret),
+		"ret":          ogTypes.Bytes2Hex(ret),
 	}).Info("Deployed contract")
 	//fmt.Println(rt.VmContext.StateDB.String())
 	//rt.Tracer.Write(os.Stdout)
 	return
 }
 
-func CallContract(contractAddr common.Address, from common.Address, coinBase common.Address, rt *Runtime, value *math.BigInt, functionHash string, params []byte) (ret []byte, leftOverGas uint64, err error) {
+func CallContract(contractAddr ogTypes.Address, from ogTypes.Address, coinBase ogTypes.Address, rt *Runtime, value *math.BigInt, functionHash string, params []byte) (ret []byte, leftOverGas uint64, err error) {
 	txContext := &ovm.TxContext{
 		From:       from,
 		To:         contractAddr,
@@ -196,11 +195,11 @@ func EncodeParams(params []interface{}) []byte {
 			} else {
 				binary.BigEndian.PutUint32(bs, 0)
 			}
-		case common.Address:
-			bsv := obj.(common.Address).Bytes
+		case ogTypes.Address20:
+			bsv := obj.(ogTypes.Address20).Bytes
 			bs = bsv[:]
-		case types.Hash:
-			bsv := obj.(types.Hash).Bytes
+		case ogTypes.Hash32:
+			bsv := obj.(ogTypes.Hash32).Bytes
 			bs = bsv[:]
 		case string:
 			bs = make([]byte, 4)
